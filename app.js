@@ -1,37 +1,31 @@
-const {spawn} = require('node:child_process')
-const { log } = require('node:console')
-const {stdin,stdout,stderr} = require('node:process')
-const fs = require('node:fs')
+const { spawn } = require('node:child_process');
+const { log } = require('node:console');
+const fs = require('node:fs');
 
-function compileCCode(){
-    const compiler =  spawn("gcc",["./number_formatter.c","-o","numberFormatter"]);
-    compiler.stderr.on("data",(data)=>{
-        console.error(`Compilation error: ${data.toString()}`)
-    })
-}
+// Compile the C code
+const compiler = spawn("gcc", ["./number_formatter.c", "-o", "numberFormatter"]);
 
-compileCCode()
+/**Ensuring the compilation is completed */
+compiler.on("close", (code) => {
+    if (code === 0) {
+        log("Compilation successful!");
 
+        // Once compiled, execute numberFormatter
+        const numberFormatter = spawn("./numberFormatter", ["public/dest.txt"]);
+        
+        numberFormatter.stdout.on("data", (data) => {
+            log(data.toString());
+        });
 
-// const numberFormatter = spawn("./numberFormatter",["./dest.txt", '$',','])
-// /** To run a node file instead of running binary executable file 
-//  * numberFormatter = spawn("node",["app.js","./dest.txt","$",","])
-//  * Inside the bracket these are the arguments
-// */
-// numberFormatter.stdout.on(data,(data)=>{
-//     log(data)
-// })
+        numberFormatter.on("close", (exitCode) => {
+            log(`numberFormatter exited with code ${exitCode}`);
+        });
 
-// numberFormatter.stderr.on(data,(data)=>{
-//     log(`stderr: ${data}`)
-// })
-// numberFormatter.on("close",(code)=>{
-//     if(code === 0 )log('process successful')
-//     else log('process unsuccessful')
-// })
+        // Pipe input file to numberFormatter's stdin
+        const fileStream = fs.createReadStream("./public/src.txt");
+        fileStream.pipe(numberFormatter.stdin);
 
-// (async()=>{
-  
-//     const fileStream = fs.createReadStream()
-//     fileStream.pipe(numberFormatter.stdin)
-// })()
+    } else {
+        log(`Compilation failed with exit code ${code}`);
+    }
+});

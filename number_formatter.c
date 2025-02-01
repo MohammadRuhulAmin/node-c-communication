@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 int main() {
+    fprintf(stdout,"I am connected! with nodejs application");
     // Open the file for writing
     FILE *outputFile = fopen("public/dest.txt", "w");
     if (outputFile == NULL) {
@@ -10,7 +11,7 @@ int main() {
         return 1;
     }
 
-    // Read characters from stdin and write to the file
+    // // Read characters from stdin and write to the file
     int c = fgetc(stdin);
     /** If we press ctrl + d it will exit from the while loop */
     while (c != EOF) {
@@ -19,11 +20,11 @@ int main() {
         c = fgetc(stdin);
     }
 
-    // Close the file
+    // // Close the file
     fclose(outputFile);
     printf("Data written to ./public/dest.txt successfully.\n");
 
-    return 0;
+    exit(0);
 }
 
 /** End of File
