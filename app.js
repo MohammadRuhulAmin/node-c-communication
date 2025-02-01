@@ -20,11 +20,15 @@ compiler.on("close", (code) => {
         numberFormatter.on("close", (exitCode) => {
             log(`numberFormatter exited with code ${exitCode}`);
         });
-
         // Pipe input file to numberFormatter's stdin
         const fileStream = fs.createReadStream("./public/src.txt");
-        fileStream.pipe(numberFormatter.stdin);
-
+        fileStream.pipe(numberFormatter.stdin,{end:false});    
+        fileStream.on('end',()=>{
+            numberFormatter.stdin.write("\nWriting manually from the stdin");
+            numberFormatter.stdin.end("\nOk END!");
+            
+        })
+        
     } else {
         log(`Compilation failed with exit code ${code}`);
     }

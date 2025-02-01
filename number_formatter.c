@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+int main(int argc,char* argv[]) {
     fprintf(stdout,"I am connected! with nodejs application");
     // Open the file for writing
     FILE *outputFile = fopen("public/dest.txt", "w");
