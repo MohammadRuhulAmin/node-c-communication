@@ -3,8 +3,12 @@
 
 int main(){
 
-    char c = fgetc(stdin);
-    fprintf(stdout,"%c",c);
+    int c = fgetc(stdin);
+    while(c!=EOF){
+        fprintf(stdout,"%c",(char)c);
+        c = fgetc(stdin);
+    }
+
 
 
     exit(0);
